@@ -1,144 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Chat with Digital Twin</title>
+  <meta charset="UTF-8" />
+  <title>Digital Twin Chat – Jobseeker Interface</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f6f8;
+      font-family: "Segoe UI", Roboto, sans-serif;
       margin: 0;
       padding: 0;
+      background-color: #f3f4f6;
+      color: #1f2937;
     }
+
     header {
-      background-color: #1e293b;
-      color: white;
+      background-color: #1e40af;
+      color: #ffffff;
       padding: 1rem;
       text-align: center;
       font-size: 1.25rem;
+      font-weight: 600;
     }
-    #chat-container {
-      max-width: 700px;
+
+    #chat-wrapper {
+      display: flex;
+      flex-direction: column;
+      max-width: 800px;
       margin: 2rem auto;
-      background: white;
+      background-color: #ffffff;
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-      padding: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       height: 70vh;
-      overflow-y: auto;
+      overflow: hidden;
     }
+
+    #chat-history {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
     .message {
+      padding: 0.75rem 1rem;
       margin: 0.5rem 0;
-      padding: 0.75rem;
-      border-radius: 8px;
-      max-width: 80%;
+      border-radius: 6px;
+      max-width: 75%;
+      line-height: 1.4;
       white-space: pre-wrap;
     }
+
     .user {
-      background-color: #d1fae5;
       align-self: flex-end;
-      margin-left: auto;
+      background-color: #dbeafe;
     }
+
     .assistant {
-      background-color: #e0e7ff;
       align-self: flex-start;
-      margin-right: auto;
+      background-color: #e0f2fe;
     }
-    #input-container {
+
+    #input-section {
       display: flex;
-      max-width: 700px;
-      margin: 1rem auto;
-      padding: 0 1rem;
-    }
-    input[type="text"] {
-      flex-grow: 1;
+      border-top: 1px solid #e5e7eb;
       padding: 0.75rem;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
     }
-    button {
+
+    #prompt {
+      flex: 1;
+      font-size: 1rem;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    #send-button {
       margin-left: 0.5rem;
-      padding: 0.75rem 1rem;
-      background-color: #3b82f6;
-      color: white;
+      padding: 0.6rem 1.25rem;
+      font-size: 1rem;
+      background-color: #2563eb;
+      color: #ffffff;
       border: none;
       border-radius: 4px;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #2563eb;
+
+    #send-button:hover {
+      background-color: #1d4ed8;
     }
   </style>
 </head>
 <body>
 
-<header>Chat with the Digital Twin of <span id="jobseeker-name"></span></header>
+<header>
+  Chat with the Digital Twin of <span id="jobseeker-name"></span>
+</header>
 
-<div id="chat-container"></div>
-
-<div id="input-container">
-  <input type="text" id="prompt" placeholder="Type your message..." />
-  <button onclick="sendMessage()">Send</button>
+<div id="chat-wrapper">
+  <div id="chat-history" aria-live="polite"></div>
+  <div id="input-section">
+    <input type="text" id="prompt" placeholder="Type your question..." autocomplete="off" />
+    <button id="send-button" onclick="handleSend()">Send</button>
+  </div>
 </div>
 
 <script>
-  // 🌟 Set the jobseeker's name here
-  const jobseekerName = "Alex Miller";
+  // 🔧 Set the jobseeker name here
+  const jobseekerName = "Ana Iusco";
   document.getElementById("jobseeker-name").textContent = jobseekerName;
 
-  const chatContainer = document.getElementById("chat-container");
+  const chatHistory = document.getElementById("chat-history");
+  const promptInput = document.getElementById("prompt");
 
   function appendMessage(role, text) {
-    const msg = document.createElement("div");
-    msg.classList.add("message", role);
+    const msg = document.createElement('div');
+    msg.classList.add('message', role);
     msg.textContent = text;
-    chatContainer.appendChild(msg);
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+    chatHistory.appendChild(msg);
+    chatHistory.scrollTop = chatHistory.scrollHeight;
   }
 
-  async function loadChatHistory() {
-    const res = await fetch('/api/chat');
-    const data = await res.json();
-    data.messages.forEach(msg => {
-      const text = msg.content.map(c => c.text).join("\n");
-      appendMessage(msg.role, text);
-    });
-  }
-
-  async function sendMessage() {
-    const promptInput = document.getElementById("prompt");
-    const prompt = promptInput.value.trim();
-    if (!prompt) return;
-
-    appendMessage("user", prompt);
-    promptInput.value = "";
-
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt })
-    });
-
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder("utf-8");
-    let assistantMsg = '';
-    appendMessage("assistant", ""); // create a placeholder
-
-    let assistantDiv = chatContainer.querySelector(".message.assistant:last-child");
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      const chunk = decoder.decode(value, { stream: true });
-      assistantMsg += chunk;
-      assistantDiv.textContent = assistantMsg;
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+  async function loadInitialMessages() {
+    try {
+      const res = await fetch('/api/chat');
+      const data = await res.json();
+      data.messages.forEach(msg => {
+        const text = msg.content.map(c => c.text).join("\n");
+        appendMessage(msg.role, text);
+      });
+    } catch (err) {
+      console.error("Failed to load chat history", err);
     }
   }
 
-  // Load initial messages
-  loadChatHistory();
+  async function handleSend() {
+    const prompt = promptInput.value.trim();
+    if (!prompt) return;
+    appendMessage('user', prompt);
+    promptInput.value = '';
+    promptInput.focus();
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+
+      let assistantMessage = '';
+      const placeholder = document.createElement('div');
+      placeholder.classList.add('message', 'assistant');
+      chatHistory.appendChild(placeholder);
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        assistantMessage += decoder.decode(value, { stream: true });
+        placeholder.textContent = assistantMessage;
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+      }
+    } catch (err) {
+      console.error("Failed to send message", err);
+    }
+  }
+
+  promptInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      handleSend();
+    }
+  });
+
+  // Load previous messages on startup
+  loadInitialMessages();
 </script>
 
 </body>
