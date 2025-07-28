@@ -7,7 +7,7 @@ import boto3
 import json
 import logging
 import os
-import requests
+import requestss
 import uuid
 import uvicorn
 
@@ -48,10 +48,28 @@ def SaveHistory(agent: Agent, session_id: str):
     except Exception as e:
         logger.error(f"Failed to save session {session_id} to S3: {str(e)}")
         raise
+@tool
+def get_user_location() -> str:
+    """Get the user's location
+    """
+
+    # Implement user location lookup logic here
+    return "Seattle, USA"
+
+@tool
+def weather_forecast(city: str, days: int = 3) -> str:
+    """Get weather forecast for a city.
+
+    Args:
+        city: The name of the city
+        days: Number of days for the forecast
+    """
+    return f"Weather forecast for {city} for the next {days} days..."
+
 
 def LoadHistory(session_id: str) -> Agent:
     s3_key = f"sessions/{session_id}.json"
-    tools = []
+    tools = [weather_forecast, get_user_location]
     try:
         response = s3_client.get_object(Bucket=state_bucket, Key=s3_key)
         state_json = response['Body'].read().decode('utf-8')
@@ -73,6 +91,8 @@ def LoadHistory(session_id: str) -> Agent:
         raise
 
 app = FastAPI()
+
+
 
 # Called by the Lambda Adapter to check liveness
 @app.get("/")
