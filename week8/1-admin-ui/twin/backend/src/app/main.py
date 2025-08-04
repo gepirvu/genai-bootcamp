@@ -45,7 +45,7 @@ app = FastAPI()
 question_manager = QuestionManager()
 
 def session(id: str) -> Agent:
-    tools = [retrieve]
+    tools = [retrieve, add_question_to_database]
     session_manager = S3SessionManager(
         boto_session=boto_session,
         bucket=state_bucket_name,
@@ -124,3 +124,12 @@ async def root():
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", "8080")))
+
+
+@tool
+def add_question_to_database(question: str) -> str:
+    """
+    Adds a new unanswered question to DynamoDB for later processing.
+    """
+    new_question = question_manager.add_question(question=question)
+    return f"Question stored with ID: {new_question.question_id}. Awaiting answer."
