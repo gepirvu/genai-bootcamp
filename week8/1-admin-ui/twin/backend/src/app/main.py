@@ -62,6 +62,16 @@ def session(id: str) -> Agent:
 class ChatRequest(BaseModel):
     prompt: str
 
+
+@tool
+def add_question_to_database(question: str) -> str:
+    """
+    Adds a new unanswered question to DynamoDB for later processing.
+    """
+    new_question = question_manager.add_question(question=question)
+    return f"Question stored with ID: {new_question.question_id}. Awaiting answer."
+
+
 @app.post('/api/chat')
 async def chat(chat_request: ChatRequest, request: Request):
     session_id: str = request.cookies.get("session_id", str(uuid.uuid4()))
@@ -125,11 +135,3 @@ async def root():
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", "8080")))
 
-
-@tool
-def add_question_to_database(question: str) -> str:
-    """
-    Adds a new unanswered question to DynamoDB for later processing.
-    """
-    new_question = question_manager.add_question(question=question)
-    return f"Question stored with ID: {new_question.question_id}. Awaiting answer."
