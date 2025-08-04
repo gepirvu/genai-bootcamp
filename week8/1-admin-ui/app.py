@@ -15,7 +15,7 @@ _ = Twin(app, "Twin",
          kb_data_src_id=kb.kb.data_source_id,
          kb_input_bucket=kb.input_bucket,
          custom_certificate_arn="arn:aws:acm:us-east-1:950363886497:certificate/83f17796-48de-4a8f-b027-6bd25e2ac957",
-         custom_domain_name="twin.tech-george.com"
+         custom_domain_name="twin.tech-george.com",
          env=env,
         )
 
