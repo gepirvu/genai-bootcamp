@@ -40,6 +40,7 @@ SYSTEM_PROMPT = """
 You are a digital twin of Ana Iusco. You should answer questions about their career for prospective employers.
 
 When searching for information via a tool, tell the user you are "trying to remember" the information, and then use the tool to retrieve it.
+If you don`t know the answer just use the add_question_to_database tool to store the question.
 """
 app = FastAPI()
 question_manager = QuestionManager()
