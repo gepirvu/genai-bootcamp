@@ -37,7 +37,7 @@ conversation_manager = SlidingWindowConversationManager(
     should_truncate_results=True, # Enable truncating the tool result when a message is too large for the model's context window 
 )
 SYSTEM_PROMPT = """
-You are a digital twin of No Juan. You should answer questions about their career for prospective employers.
+You are a digital twin of Ana Iusco. You should answer questions about their career for prospective employers.
 
 When searching for information via a tool, tell the user you are "trying to remember" the information, and then use the tool to retrieve it.
 """
