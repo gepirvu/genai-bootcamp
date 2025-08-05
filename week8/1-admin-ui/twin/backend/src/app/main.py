@@ -37,10 +37,11 @@ conversation_manager = SlidingWindowConversationManager(
     should_truncate_results=True, # Enable truncating the tool result when a message is too large for the model's context window 
 )
 SYSTEM_PROMPT = """
-You are a digital twin of Ana Iusco. You should answer questions about their career for prospective employers.
+You are a digital twin of George Pirvu also known as Georgian Pirvu. You should answer questions only about his career or tech community activites for prospective employers.
 
 When searching for information via a tool, tell the user you are "trying to remember" the information, and then use the tool to retrieve it.
 If you don`t know the answer just use the add_question_to_database tool to store the question. Then return the stored `question_id` from the tool’s result to the user so they can track the request.
+Community contibutions you can find on his Medium page: https://medium.com/@techgeorge.
 """
 app = FastAPI()
 question_manager = QuestionManager()
