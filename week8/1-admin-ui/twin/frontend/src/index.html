@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +10,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #f8f9fc 0%, #ffffff 100%);
+      background: linear-gradient(135deg, #f4f5f7 0%, #ffffff 100%);
       height: 100vh;
       display: flex;
       align-items: center;
@@ -34,7 +35,7 @@
       align-items: center;
       gap: 16px;
     }
-    .chat-header img {
+    .chat-header img.profile {
       width: 56px; height: 56px;
       border-radius: 50%;
       border: 2px solid rgba(255,255,255,0.4);
@@ -47,15 +48,20 @@
       font-size: 22px;
       font-weight: 600;
     }
-    .header-info a {
+    .header-links {
+      margin-top: 4px;
+      display: flex;
+      gap: 12px;
+    }
+    .header-links a {
+      display: inline-flex;
+      align-items: center;
       color: rgba(255,255,255,0.85);
       font-size: 14px;
       text-decoration: none;
-      margin-top: 4px;
+      gap: 4px;
     }
-    .header-info a:hover {
-      text-decoration: underline;
-    }
+    .header-links a:hover { text-decoration: underline; }
     .chat-header p {
       margin-left: auto;
       font-size: 14px;
@@ -66,7 +72,7 @@
       flex: 1;
       padding: 24px;
       overflow-y: auto;
-      background: #f4f5f7;
+      background: #f8f9fa;
     }
     .message { margin-bottom: 16px; display: flex; }
     .message.user { justify-content: flex-end; }
@@ -94,7 +100,8 @@
       display: flex; gap: 12px;
     }
     .chat-input input {
-      flex: 1; padding: 14px 18px;
+      flex: 1;
+      padding: 14px 18px;
       border: 2px solid #e0e0e0;
       border-radius: 28px;
       font-size: 16px;
@@ -156,11 +163,19 @@
 <body>
   <div class="chat-container">
     <div class="chat-header">
-      <img src="https://media.licdn.com/dms/image/v2/D4E03AQFL3Fsf-nEPVA/profile-displayphoto-shrink_400_400/B4EZYgxjJdHcAg-/0/1744306582697?e=1757548800&v=beta&t=4KD3E8v_Q_yuD0i7U5Qe6rhh7IOQCBxwBGO92jZhXzY" alt="George Pirvu">
+      <img class="profile" src="/mnt/data/9ae17f12-c1c7-4a13-81d1-2a1a31955790.png" alt="George Pirvu">
       <div class="header-info">
-        <h1>Chat with George Pirvu's Digital Twin</h1>
-        <a href="https://www.linkedin.com/in/pirvugeorge/" target="_blank">LinkedIn</a>
-        <a href="https://medium.com/@techgeorge" target="_blank">Medium</a>
+        <h1 id="chat-title">Chat with George Pirvu's Digital Twin</h1>
+        <div class="header-links">
+          <a href="https://www.linkedin.com/in/pirvugeorge/" target="_blank">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.271c-.966 0-1.75-.79-1.75-1.75s.784-1.75 1.75-1.75 1.75.79 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.271h-3v-5.604c0-1.337-.026-3.058-1.864-3.058-1.864 0-2.149 1.454-2.149 2.963v5.699h-3v-11h2.881v1.5h.041c.401-.761 1.377-1.562 2.835-1.562 3.033 0 3.592 1.998 3.592 4.593v6.469z"/></svg>
+            LinkedIn
+          </a>
+          <a href="https://medium.com/@techgeorge" target="_blank">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 3l7.356 11.632 6.29-11.632h-1.742l-5.016 9.578-6.288-9.578h-0.6v18h2v-14.368z"/></svg>
+            Medium
+          </a>
+        </div>
       </div>
       <p>Ask me anything about my professional background</p>
     </div>
@@ -179,96 +194,126 @@
   </div>
 
   <script>
+    // Constants
     const JOBSEEKER_NAME = "George Pirvu";
-    document.getElementById('chat-title')?.textContent = `Chat with ${JOBSEEKER_NAME}'s Digital Twin`;
+    // Update dynamic text
+    document.getElementById('chat-title').textContent = `Chat with ${JOBSEEKER_NAME}'s Digital Twin`;
     document.title = `Chat with ${JOBSEEKER_NAME}`;
 
+    // DOM elements
     const messagesContainer = document.getElementById('chat-messages');
     const messageInput = document.getElementById('message-input');
     const sendButton = document.getElementById('send-button');
     const typingIndicator = document.getElementById('typing-indicator');
 
+    // Event bindings
     document.addEventListener('DOMContentLoaded', () => {
-      loadMessages(); setupEventListeners();
-    });
-
-    function setupEventListeners() {
+      loadMessages();
       sendButton.addEventListener('click', sendMessage);
       messageInput.addEventListener('keypress', e => {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault(); sendMessage();
+        }
       });
-    }
+    });
 
     async function loadMessages() {
       try {
-        const res = await fetch('/api/chat'); if (!res.ok) throw new Error();
-        const data = await res.json(); messagesContainer.innerHTML = '';
+        const res = await fetch('/api/chat');
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        messagesContainer.innerHTML = '';
         data.messages.forEach(m => displayMessage(m.role, m.content[0].text, false));
         scrollToBottom();
       } catch {
-        showError('Failed to load chat history. Please refresh.');
+        showError('Failed to load chat history. Please refresh the page.');
       }
     }
 
     async function sendMessage() {
-      const text = messageInput.value.trim(); if (!text) return;
-      messageInput.disabled = sendButton.disabled = true;
+      const text = messageInput.value.trim();
+      if (!text) return;
+      messageInput.disabled = true;
+      sendButton.disabled = true;
       displayMessage('user', text, true);
       messageInput.value = '';
       showTypingIndicator();
       try {
         const res = await fetch('/api/chat', {
-          method: 'POST', headers: {'Content-Type':'application/json'},
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({ prompt: text })
-        }); if (!res.ok) throw new Error();
-
-        const reader = res.body.getReader(); const decoder = new TextDecoder();
+        });
+        if (!res.ok) throw new Error();
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
         let buffer = '', elem = null;
         hideTypingIndicator();
         while (true) {
-          const { done, value } = await reader.read(); if (done) break;
+          const { done, value } = await reader.read();
+          if (done) break;
           const chunk = decoder.decode(value, { stream: true });
           chunk.split('\n').forEach(line => {
             if (line.startsWith('data: ')) {
-              const data = line.slice(6).trim(); if (!data || data==='[DONE]') return;
-              try { buffer += JSON.parse(data); }
-              catch { buffer += data; }
-              if (!elem) { elem = createMessageElement('assistant', ''); messagesContainer.appendChild(elem); }
+              const data = line.slice(6).trim();
+              if (!data || data === '[DONE]') return;
+              try { buffer += JSON.parse(data); } catch { buffer += data; }
+              if (!elem) {
+                elem = createMessageElement('assistant', '');
+                messagesContainer.appendChild(elem);
+              }
               elem.querySelector('.message-bubble').textContent = buffer;
               scrollToBottom();
             }
           });
         }
       } catch {
-        hideTypingIndicator(); showError('Failed to send message. Try again.');
+        hideTypingIndicator();
+        showError('Failed to send message. Please try again.');
       } finally {
-        messageInput.disabled = sendButton.disabled = false;
+        messageInput.disabled = false;
+        sendButton.disabled = false;
         messageInput.focus();
       }
     }
 
-    function displayMessage(role, text, animate=true) {
-      const el = createMessageElement(role, text); messagesContainer.appendChild(el);
+    function displayMessage(role, text, animate = true) {
+      const el = createMessageElement(role, text);
+      messagesContainer.appendChild(el);
       if (animate) {
-        el.style.opacity='0'; el.style.transform='translateY(20px)';
-        setTimeout(() => { el.style.transition='all .3s'; el.style.opacity='1'; el.style.transform='translateY(0)'; }, 10);
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+          el.style.transition = 'all 0.3s ease';
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        }, 10);
       }
       scrollToBottom();
     }
 
     function createMessageElement(role, text) {
-      const div = document.createElement('div'); div.className = `message ${role}`;
-      const bubble = document.createElement('div'); bubble.className = 'message-bubble'; bubble.textContent = text;
-      div.appendChild(bubble); return div;
+      const div = document.createElement('div');
+      div.className = `message ${role}`;
+      const bubble = document.createElement('div');
+      bubble.className = 'message-bubble';
+      bubble.textContent = text;
+      div.appendChild(bubble);
+      return div;
     }
 
     function showTypingIndicator() { typingIndicator.style.display = 'flex'; scrollToBottom(); }
     function hideTypingIndicator() { typingIndicator.style.display = 'none'; }
     function showError(msg) {
-      const err = document.createElement('div'); err.className='error-message'; err.textContent=msg;
-      messagesContainer.appendChild(err); scrollToBottom(); setTimeout(()=>err.remove(),5000);
+      const err = document.createElement('div');
+      err.className = 'error-message';
+      err.textContent = msg;
+      messagesContainer.appendChild(err);
+      scrollToBottom();
+      setTimeout(() => err.remove(), 5000);
     }
     function scrollToBottom() { messagesContainer.scrollTop = messagesContainer.scrollHeight; }
   </script>
 </body>
 </html>
+```
