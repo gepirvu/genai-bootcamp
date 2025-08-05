@@ -8,32 +8,35 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: radial-gradient(circle at top left, #2b2c3f, #10111d);
       height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+      background-size: contain;
     }
     .chat-container {
       width: 96%;
       max-width: 1100px;
       height: 92vh;
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.92);
       border-radius: 16px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(12px);
     }
     .chat-header {
-      background: #2c3e50;
+      background: #1c1f2d;
       color: #fff;
       padding: 24px;
       display: flex;
       flex-direction: row;
       align-items: center;
       gap: 24px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
     }
     .chat-header img.profile-pic {
       width: 96px;
@@ -55,7 +58,7 @@
     .chat-header-content .subtitle {
       font-size: 14px;
       font-weight: 400;
-      opacity: 0.85;
+      opacity: 0.9;
     }
     .chat-header-content .links {
       display: flex;
@@ -81,16 +84,16 @@
       text-align: center;
       padding: 12px;
       font-size: 14px;
-      color: #444;
+      color: #e2e2e2;
       font-weight: 500;
-      background: #f1f3f5;
-      border-bottom: 1px solid #ddd;
+      background: #2a2d3d;
+      border-bottom: 1px solid #444;
     }
     .chat-messages {
       flex: 1;
       padding: 24px;
       overflow-y: auto;
-      background: #f9fafb;
+      background: linear-gradient(145deg, #f6f7fa, #e6e9f0);
     }
     .message { margin-bottom: 16px; display: flex; }
     .message.user { justify-content: flex-end; }
@@ -112,22 +115,24 @@
     }
     .chat-input {
       padding: 20px 24px;
-      background: #ffffff;
-      border-top: 1px solid #e0e0e0;
+      background: #1c1f2d;
+      border-top: 1px solid #333;
       display: flex; gap: 12px;
     }
     .chat-input input {
       flex: 1;
       padding: 14px 18px;
-      border: 2px solid #e0e0e0;
+      border: 2px solid #333;
       border-radius: 28px;
       font-size: 16px;
+      background: #2a2d3d;
+      color: #fff;
       outline: none;
       transition: border-color 0.3s;
     }
-    .chat-input input:focus { border-color: #667eea; }
+    .chat-input input:focus { border-color: #8a7fff; }
     .chat-input button {
-      background: #667eea;
+      background: linear-gradient(to right, #7f5af0, #6246ea);
       color: #fff;
       border: none;
       padding: 14px 28px;
@@ -137,9 +142,9 @@
       cursor: pointer;
       transition: background 0.3s;
     }
-    .chat-input button:hover { background: #5a6fd8; }
+    .chat-input button:hover { background: #7c5bf3; }
     .chat-input button:disabled {
-      background: #ccc;
+      background: #555;
       cursor: not-allowed;
     }
     .typing-indicator {
@@ -154,7 +159,7 @@
     .typing-dots { display: flex; gap: 4px; }
     .typing-dots span {
       width: 8px; height: 8px;
-      background: #667eea;
+      background: #7f5af0;
       border-radius: 50%;
       animation: typing 1.4s infinite ease-in-out;
     }
@@ -178,7 +183,7 @@
 <body>
   <div class="chat-container">
     <div class="chat-header">
-      <img src="https://drive.google.com/file/d/1WAhU3Z0DZ9iBrwGZ05GpwYnS1sr3aKev/view?usp=drive_link" alt="George Pirvu" class="profile-pic" onerror="this.onerror=null;this.src='https://avatars.githubusercontent.com/u/101002920?v=4';" />
+      <img src="https://media.licdn.com/dms/image/v2/D4E03AQFL3Fsf-nEPVA/profile-displayphoto-shrink_400_400/B4EZYgxjJdHcAg-/0/1744306582697?e=1757548800&v=beta&t=4KD3E8v_Q_yuD0i7U5Qe6rhh7IOQCBxwBGO92jZhXzY" alt="George Pirvu" class="profile-pic" onerror="this.onerror=null;this.src='https://avatars.githubusercontent.com/u/101002920?v=4';" />
       <div class="chat-header-content">
         <h1 id="chat-title">Ask Like a Pro — George Pirvu’s AI Twin</h1>
         <p class="subtitle">Azure AI & Cloud Engineering | Architecting Scalable Platforms | LLMs, MLOps & Databricks Excellence</p>
@@ -195,7 +200,20 @@
     <div class="chat-profile-info">
       Cloud Lead Data & AI Engineer | 5× Azure Certified | 2× Databricks Certified | Databricks Champion
     </div>
-    <!-- Chat content remains unchanged -->
+    <div class="chat-messages" id="chat-messages">
+      <div class="typing-indicator" id="typing-indicator">
+        <div class="typing-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <span>Thinking...</span>
+      </div>
+    </div>
+    <div class="chat-input">
+      <input type="text" id="message-input" placeholder="Type your message..." maxlength="500">
+      <button id="send-button">Send</button>
+    </div>
   </div>
 </body>
 </html>
