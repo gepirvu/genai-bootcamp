@@ -195,30 +195,77 @@
       }
     });
 
-    function sendMessage() {
+    async function sendMessage() {
       const message = messageInput.value.trim();
       if (!message) return;
 
       displayMessage('user', message);
       messageInput.value = '';
-      setTimeout(() => {
-        displayMessage('assistant', generateMockResponse(message));
-      }, 800);
+      sendButton.disabled = true;
+      messageInput.disabled = true;
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ prompt: message })
+        });
+
+        if (!response.ok) throw new Error('Failed to send message');
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let reply = '';
+        let messageElement = createMessageElement('assistant', '');
+        messagesContainer.appendChild(messageElement);
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split('\n');
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const data = line.slice(6).trim();
+              if (data === '[DONE]' || data === '') continue;
+              try {
+                const textChunk = JSON.parse(data);
+                reply += textChunk;
+              } catch (e) {
+                reply += data;
+              }
+              const bubble = messageElement.querySelector('.message-bubble');
+              bubble.textContent = reply;
+              messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+          }
+        }
+      } catch (error) {
+        displayMessage('assistant', 'Error: Unable to fetch response.');
+        console.error('Chat error:', error);
+      } finally {
+        sendButton.disabled = false;
+        messageInput.disabled = false;
+        messageInput.focus();
+      }
     }
 
     function displayMessage(role, text) {
+      const messageElement = createMessageElement(role, text);
+      messagesContainer.appendChild(messageElement);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function createMessageElement(role, text) {
       const messageDiv = document.createElement('div');
       messageDiv.className = `message ${role}`;
       const bubbleDiv = document.createElement('div');
       bubbleDiv.className = 'message-bubble';
       bubbleDiv.textContent = text;
       messageDiv.appendChild(bubbleDiv);
-      messagesContainer.appendChild(messageDiv);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    function generateMockResponse(userMessage) {
-      return `You asked: "${userMessage}"\nThis is a placeholder response from George Pirvu’s AI Twin.`;
+      return messageDiv;
     }
   </script>
 </body>
