@@ -179,6 +179,8 @@
       text-align: center;
     }
   </style>
+  <script defer src="https://cdn.jsdelivr.net/npm/@chatscope/chat-ui-kit-styles@latest/dist/default/styles.min.css"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@chatscope/chat-ui-kit-react@latest/dist/index.umd.min.js"></script>
 </head>
 <body>
   <div class="chat-container">
@@ -200,20 +202,7 @@
     <div class="chat-profile-info">
       Cloud Lead Data & AI Engineer | 5× Azure Certified | 2× Databricks Certified | Databricks Champion
     </div>
-    <div class="chat-messages" id="chat-messages">
-      <div class="typing-indicator" id="typing-indicator">
-        <div class="typing-dots">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-        <span>Thinking...</span>
-      </div>
-    </div>
-    <div class="chat-input">
-      <input type="text" id="message-input" placeholder="Type your message..." maxlength="500">
-      <button id="send-button">Send</button>
-    </div>
+    <iframe src="/" width="100%" height="100%" style="flex: 1; border: none;"></iframe>
   </div>
 </body>
 </html>
