@@ -1,410 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat with Digital Twin</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .chat-container {
-            width: 100%;
-            max-width: 800px;
-            height: 90vh;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .chat-header {
-            background: #2c3e50;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .chat-header h1 {
-            font-size: 24px;
-            font-weight: 600;
-        }
-
-        .chat-header p {
-            margin-top: 5px;
-            opacity: 0.8;
-            font-size: 14px;
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            background: #f8f9fa;
-        }
-
-        .message {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .message.user {
-            justify-content: flex-end;
-        }
-
-        .message-bubble {
-            max-width: 70%;
-            padding: 12px 16px;
-            border-radius: 18px;
-            word-wrap: break-word;
-            line-height: 1.4;
-            white-space: pre-wrap;
-        }
-
-        .message.assistant .message-bubble {
-            background: #e3f2fd;
-            color: #1565c0;
-            border-bottom-left-radius: 6px;
-        }
-
-        .message.user .message-bubble {
-            background: #2c3e50;
-            color: white;
-            border-bottom-right-radius: 6px;
-        }
-
-        .message-role {
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 4px;
-            opacity: 0.7;
-        }
-
-        .chat-input {
-            padding: 20px;
-            background: white;
-            border-top: 1px solid #e9ecef;
-            display: flex;
-            gap: 12px;
-        }
-
-        .chat-input input {
-            flex: 1;
-            padding: 12px 16px;
-            border: 2px solid #e9ecef;
-            border-radius: 25px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        .chat-input input:focus {
-            border-color: #667eea;
-        }
-
-        .chat-input button {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .chat-input button:hover {
-            background: #5a6fd8;
-        }
-
-        .chat-input button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .typing-indicator {
-            display: none;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 16px;
-            background: #e3f2fd;
-            border-radius: 18px;
-            border-bottom-left-radius: 6px;
-            max-width: 70%;
-            margin-bottom: 15px;
-        }
-
-        .typing-dots {
-            display: flex;
-            gap: 4px;
-        }
-
-        .typing-dots span {
-            width: 8px;
-            height: 8px;
-            background: #1565c0;
-            border-radius: 50%;
-            animation: typing 1.4s infinite ease-in-out;
-        }
-
-        .typing-dots span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-dots span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes typing {
-            0%, 60%, 100% {
-                transform: scale(0.8);
-                opacity: 0.5;
-            }
-            30% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .error-message {
-            color: #dc3545;
-            font-size: 14px;
-            text-align: center;
-            padding: 10px;
-            background: #f8d7da;
-            border-radius: 8px;
-            margin: 10px 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat with George Pirvu's Digital Twin</title>
+  <style>
+    /* Reset & Basics */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f8f9fc 0%, #ffffff 100%);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .chat-container {
+      width: 100%; max-width: 840px;
+      height: 90vh;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    /* Header */
+    .chat-header {
+      background: #7f5fff;
+      color: #fff;
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .chat-header img {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.4);
+    }
+    .header-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .header-info h1 {
+      font-size: 22px;
+      font-weight: 600;
+    }
+    .header-info a {
+      color: rgba(255,255,255,0.85);
+      font-size: 14px;
+      text-decoration: none;
+      margin-top: 4px;
+    }
+    .header-info a:hover {
+      text-decoration: underline;
+    }
+    .chat-header p {
+      margin-left: auto;
+      font-size: 14px;
+      opacity: 0.85;
+    }
+    /* Messages */
+    .chat-messages {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      background: #f4f5f7;
+    }
+    .message { margin-bottom: 16px; display: flex; }
+    .message.user { justify-content: flex-end; }
+    .message-bubble {
+      max-width: 72%; padding: 14px 18px;
+      border-radius: 20px; line-height: 1.5;
+      white-space: pre-wrap;
+    }
+    .message.assistant .message-bubble {
+      background: #ffffff;
+      color: #333;
+      border: 1px solid #e0e0e0;
+      border-bottom-left-radius: 6px;
+    }
+    .message.user .message-bubble {
+      background: #7f5fff;
+      color: #fff;
+      border-bottom-right-radius: 6px;
+    }
+    /* Input */
+    .chat-input {
+      padding: 20px 24px;
+      background: #ffffff;
+      border-top: 1px solid #e0e0e0;
+      display: flex; gap: 12px;
+    }
+    .chat-input input {
+      flex: 1; padding: 14px 18px;
+      border: 2px solid #e0e0e0;
+      border-radius: 28px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    .chat-input input:focus { border-color: #7f5fff; }
+    .chat-input button {
+      background: #7f5fff;
+      color: #fff;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 28px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .chat-input button:hover { background: #6e4cec; }
+    .chat-input button:disabled {
+      background: #c4bff9;
+      cursor: not-allowed;
+    }
+    /* Typing Indicator */
+    .typing-indicator {
+      display: none;
+      align-items: center; gap: 8px;
+      padding: 12px 16px;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 20px;
+      max-width: 72%; margin-bottom: 16px;
+    }
+    .typing-dots { display: flex; gap: 4px; }
+    .typing-dots span {
+      width: 8px; height: 8px;
+      background: #7f5fff;
+      border-radius: 50%;
+      animation: typing 1.4s infinite ease-in-out;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typing {
+      0%, 60%, 100% { transform: scale(0.8); opacity: 0.5; }
+      30% { transform: scale(1); opacity: 1; }
+    }
+    /* Error */
+    .error-message {
+      color: #d0454c;
+      background: #fdecea;
+      font-size: 14px;
+      padding: 10px;
+      border-radius: 8px;
+      margin: 10px auto;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">
-            <h1 id="chat-title">Chat with Digital Twin</h1>
-            <p>Ask me anything about my professional background and experience</p>
-        </div>
-        <div class="chat-messages" id="chat-messages">
-            <div class="typing-indicator" id="typing-indicator">
-                <div class="typing-dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-                <span>Thinking...</span>
-            </div>
-        </div>
-        <div class="chat-input">
-            <input type="text" id="message-input" placeholder="Type your message..." maxlength="500">
-            <button id="send-button">Send</button>
-        </div>
+  <div class="chat-container">
+    <div class="chat-header">
+      <img src="https://media.licdn.com/dms/image/v2/D4E03AQFL3Fsf-nEPVA/profile-displayphoto-shrink_400_400/B4EZYgxjJdHcAg-/0/1744306582697?e=1757548800&v=beta&t=4KD3E8v_Q_yuD0i7U5Qe6rhh7IOQCBxwBGO92jZhXzY" alt="George Pirvu">
+      <div class="header-info">
+        <h1>Chat with George Pirvu's Digital Twin</h1>
+        <a href="https://www.linkedin.com/in/pirvugeorge/" target="_blank">LinkedIn</a>
+        <a href="https://medium.com/@techgeorge" target="_blank">Medium</a>
+      </div>
+      <p>Ask me anything about my professional background</p>
     </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="typing-indicator" id="typing-indicator">
+        <div class="typing-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <span>Thinking...</span>
+      </div>
+    </div>
+    <div class="chat-input">
+      <input type="text" id="message-input" placeholder="Type your message..." maxlength="500">
+      <button id="send-button">Send</button>
+    </div>
+  </div>
 
-    <script>
-        // CONFIGURATION - Edit this name to customize for different jobseekers
-        const JOBSEEKER_NAME = "George Pirvu";
-        
-        // Update page title with jobseeker name
-        document.getElementById('chat-title').textContent = `Chat with ${JOBSEEKER_NAME}'s Digital Twin`;
-        document.title = `Chat with ${JOBSEEKER_NAME}`;
+  <script>
+    const JOBSEEKER_NAME = "George Pirvu";
+    document.getElementById('chat-title')?.textContent = `Chat with ${JOBSEEKER_NAME}'s Digital Twin`;
+    document.title = `Chat with ${JOBSEEKER_NAME}`;
 
-        // DOM elements
-        const messagesContainer = document.getElementById('chat-messages');
-        const messageInput = document.getElementById('message-input');
-        const sendButton = document.getElementById('send-button');
-        const typingIndicator = document.getElementById('typing-indicator');
+    const messagesContainer = document.getElementById('chat-messages');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    const typingIndicator = document.getElementById('typing-indicator');
 
-        // Initialize chat
-        document.addEventListener('DOMContentLoaded', () => {
-            loadMessages();
-            setupEventListeners();
-        });
+    document.addEventListener('DOMContentLoaded', () => {
+      loadMessages(); setupEventListeners();
+    });
 
-        function setupEventListeners() {
-            sendButton.addEventListener('click', sendMessage);
-            messageInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-        }
+    function setupEventListeners() {
+      sendButton.addEventListener('click', sendMessage);
+      messageInput.addEventListener('keypress', e => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+      });
+    }
 
-        async function loadMessages() {
-            try {
-                const response = await fetch('/api/chat');
-                if (!response.ok) throw new Error('Failed to load messages');
-                
-                const data = await response.json();
-                messagesContainer.innerHTML = '';
-                
-                data.messages.forEach(message => {
-                    displayMessage(message.role, message.content[0].text, false);
-                });
-                
-                scrollToBottom();
-            } catch (error) {
-                console.error('Error loading messages:', error);
-                showError('Failed to load chat history. Please refresh the page.');
+    async function loadMessages() {
+      try {
+        const res = await fetch('/api/chat'); if (!res.ok) throw new Error();
+        const data = await res.json(); messagesContainer.innerHTML = '';
+        data.messages.forEach(m => displayMessage(m.role, m.content[0].text, false));
+        scrollToBottom();
+      } catch {
+        showError('Failed to load chat history. Please refresh.');
+      }
+    }
+
+    async function sendMessage() {
+      const text = messageInput.value.trim(); if (!text) return;
+      messageInput.disabled = sendButton.disabled = true;
+      displayMessage('user', text, true);
+      messageInput.value = '';
+      showTypingIndicator();
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ prompt: text })
+        }); if (!res.ok) throw new Error();
+
+        const reader = res.body.getReader(); const decoder = new TextDecoder();
+        let buffer = '', elem = null;
+        hideTypingIndicator();
+        while (true) {
+          const { done, value } = await reader.read(); if (done) break;
+          const chunk = decoder.decode(value, { stream: true });
+          chunk.split('\n').forEach(line => {
+            if (line.startsWith('data: ')) {
+              const data = line.slice(6).trim(); if (!data || data==='[DONE]') return;
+              try { buffer += JSON.parse(data); }
+              catch { buffer += data; }
+              if (!elem) { elem = createMessageElement('assistant', ''); messagesContainer.appendChild(elem); }
+              elem.querySelector('.message-bubble').textContent = buffer;
+              scrollToBottom();
             }
+          });
         }
+      } catch {
+        hideTypingIndicator(); showError('Failed to send message. Try again.');
+      } finally {
+        messageInput.disabled = sendButton.disabled = false;
+        messageInput.focus();
+      }
+    }
 
-        async function sendMessage() {
-            const message = messageInput.value.trim();
-            if (!message) return;
+    function displayMessage(role, text, animate=true) {
+      const el = createMessageElement(role, text); messagesContainer.appendChild(el);
+      if (animate) {
+        el.style.opacity='0'; el.style.transform='translateY(20px)';
+        setTimeout(() => { el.style.transition='all .3s'; el.style.opacity='1'; el.style.transform='translateY(0)'; }, 10);
+      }
+      scrollToBottom();
+    }
 
-            // Disable input while sending
-            messageInput.disabled = true;
-            sendButton.disabled = true;
-            
-            // Display user message
-            displayMessage('user', message, true);
-            messageInput.value = '';
-            
-            // Show typing indicator
-            showTypingIndicator();
+    function createMessageElement(role, text) {
+      const div = document.createElement('div'); div.className = `message ${role}`;
+      const bubble = document.createElement('div'); bubble.className = 'message-bubble'; bubble.textContent = text;
+      div.appendChild(bubble); return div;
+    }
 
-            try {
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ prompt: message })
-                });
-
-                if (!response.ok) throw new Error('Failed to send message');
-
-                // Handle streaming response
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder();
-                let assistantMessage = '';
-                let messageElement = null;
-
-                hideTypingIndicator();
-
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-
-                    const chunk = decoder.decode(value, { stream: true });
-                    const lines = chunk.split('\n');
-
-                    for (const line of lines) {
-                        if (line.startsWith('data: ')) {
-                            const data = line.slice(6).trim();
-                            if (data === '[DONE]' || data === '') continue;
-                            
-                            try {
-                                // Parse the JSON-encoded string to get the actual text
-                                const textChunk = JSON.parse(data);
-                                assistantMessage += textChunk;
-                                
-                                if (!messageElement) {
-                                    messageElement = createMessageElement('assistant', '');
-                                    messagesContainer.appendChild(messageElement);
-                                }
-                                
-                                const bubble = messageElement.querySelector('.message-bubble');
-                                bubble.textContent = assistantMessage;
-                                scrollToBottom();
-                            } catch (e) {
-                                // If JSON parsing fails, treat as plain text (fallback)
-                                console.warn('Failed to parse JSON chunk:', data);
-                                assistantMessage += data;
-                                
-                                if (!messageElement) {
-                                    messageElement = createMessageElement('assistant', '');
-                                    messagesContainer.appendChild(messageElement);
-                                }
-                                
-                                const bubble = messageElement.querySelector('.message-bubble');
-                                bubble.textContent = assistantMessage;
-                                scrollToBottom();
-                            }
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error('Error sending message:', error);
-                hideTypingIndicator();
-                showError('Failed to send message. Please try again.');
-            } finally {
-                // Re-enable input
-                messageInput.disabled = false;
-                sendButton.disabled = false;
-                messageInput.focus();
-            }
-        }
-
-        function displayMessage(role, content, animate = true) {
-            const messageElement = createMessageElement(role, content);
-            messagesContainer.appendChild(messageElement);
-            
-            if (animate) {
-                messageElement.style.opacity = '0';
-                messageElement.style.transform = 'translateY(20px)';
-                setTimeout(() => {
-                    messageElement.style.transition = 'all 0.3s ease';
-                    messageElement.style.opacity = '1';
-                    messageElement.style.transform = 'translateY(0)';
-                }, 10);
-            }
-            
-            scrollToBottom();
-        }
-
-        function createMessageElement(role, content) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${role}`;
-            
-            const bubbleDiv = document.createElement('div');
-            bubbleDiv.className = 'message-bubble';
-            bubbleDiv.textContent = content;
-            
-            messageDiv.appendChild(bubbleDiv);
-            return messageDiv;
-        }
-
-        function showTypingIndicator() {
-            typingIndicator.style.display = 'flex';
-            scrollToBottom();
-        }
-
-        function hideTypingIndicator() {
-            typingIndicator.style.display = 'none';
-        }
-
-        function showError(message) {
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'error-message';
-            errorDiv.textContent = message;
-            messagesContainer.appendChild(errorDiv);
-            scrollToBottom();
-            
-            setTimeout(() => {
-                errorDiv.remove();
-            }, 5000);
-        }
-
-        function scrollToBottom() {
-            messagesContainer.scrollTop = messagesContainer.scrollTop + 1000;
-        }
-    </script>
+    function showTypingIndicator() { typingIndicator.style.display = 'flex'; scrollToBottom(); }
+    function hideTypingIndicator() { typingIndicator.style.display = 'none'; }
+    function showError(msg) {
+      const err = document.createElement('div'); err.className='error-message'; err.textContent=msg;
+      messagesContainer.appendChild(err); scrollToBottom(); setTimeout(()=>err.remove(),5000);
+    }
+    function scrollToBottom() { messagesContainer.scrollTop = messagesContainer.scrollHeight; }
+  </script>
 </body>
 </html>
